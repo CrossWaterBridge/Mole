@@ -28,7 +28,9 @@ public class MoleServer {
     private let server = HttpServer()
     
     public init() {
-        server.start()
+        do {
+            try server.start()
+        } catch {}
     }
     
     public subscript(name: String) -> ((AnyObject) throws -> AnyObject?)? {
@@ -38,17 +40,14 @@ public class MoleServer {
         set {
             if let handler = newValue {
                 server["/" + name] = { request in
-                    let data = request.body?.dataUsingEncoding(NSUTF8StringEncoding)
+                    let body = request.body
+                    let data = NSData(bytes: body, length: body.count)
                     
                     let parameters: AnyObject
-                    if let data = data {
-                        do {
-                            parameters = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: nil)
-                        } catch {
-                            return HttpResponse.InternalServerError
-                        }
-                    } else {
-                        parameters = []
+                    do {
+                        parameters = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: nil)
+                    } catch {
+                        return HttpResponse.InternalServerError
                     }
                     
                     let response: AnyObject
@@ -59,7 +58,8 @@ public class MoleServer {
                     }
                     
                     do {
-                        return HttpResponse.RAW(200, "OK", nil, try NSPropertyListSerialization.dataWithPropertyList(response, format: .XMLFormat_v1_0, options: 0))
+                        let data = try NSPropertyListSerialization.dataWithPropertyList(response, format: .XMLFormat_v1_0, options: 0)
+                        return HttpResponse.RAW(200, "OK", nil, Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)))
                     } catch {
                         return HttpResponse.InternalServerError
                     }

@@ -1,10 +1,10 @@
 PODS:
-  - Swifter (1.0.2)
+  - Swifter (1.0.6)
 
 DEPENDENCIES:
   - Swifter
 
 SPEC CHECKSUMS:
-  Swifter: 711617abaf291bf64e84284bb0ac50b939aca763
+  Swifter: 9273ad9131c13646fed28980bfe72b927394cd45
 
 COCOAPODS: 0.39.0

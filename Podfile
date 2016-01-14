@@ -4,4 +4,4 @@ platform :ios, '8.0'
 
 use_frameworks!
 
-pod 'Swifter'
+pod 'Swifter', '1.0.6'

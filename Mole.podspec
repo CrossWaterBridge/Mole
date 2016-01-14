@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = "Mole"
-  s.version               = "1.0.0"
+  s.version               = "1.0.1"
   s.summary               = "Xcode’s UI testing is black-box by design. This works around that."
   s.author                = 'Hilton Campbell'
   s.homepage              = "https://github.com/CrossWaterBridge/Mole"
@@ -10,5 +10,5 @@ Pod::Spec.new do |s|
   s.source_files          = 'Mole/*.swift'
   s.requires_arc          = true
   
-  s.dependency 'Swifter'
+  s.dependency 'Swifter', '1.0.6'
 end
