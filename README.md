@@ -8,7 +8,7 @@ Xcode’s UI testing is black-box by design. This works around that.
 
 ### Installation
 
-Install with Cocoapods by adding the following to your Podfile:
+Install with CocoaPods by adding the following to your Podfile:
 
 ```ruby
 use_frameworks!
