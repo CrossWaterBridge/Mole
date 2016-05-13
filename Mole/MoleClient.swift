@@ -26,7 +26,7 @@ public class MoleClient {
     
     public init() {}
     
-    public func invokeMethod(name: String = __FUNCTION__, parameters: AnyObject = []) -> AnyObject? {
+    public func invokeMethod(name: String = #function, parameters: AnyObject = []) -> AnyObject? {
         let urlComponents = NSURLComponents()
         urlComponents.scheme = "http"
         urlComponents.host = "localhost"

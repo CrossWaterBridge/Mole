@@ -4,4 +4,6 @@ platform :ios, '8.0'
 
 use_frameworks!
 
-pod 'Swifter', '1.0.6'
+target 'Mole' do
+	pod 'Swifter', '1.1.4'
+end

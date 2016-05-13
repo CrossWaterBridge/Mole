@@ -59,7 +59,9 @@ public class MoleServer {
                     
                     do {
                         let data = try NSPropertyListSerialization.dataWithPropertyList(response, format: .XMLFormat_v1_0, options: 0)
-                        return HttpResponse.RAW(200, "OK", nil, Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length)))
+                        var array = [UInt8](count: data.length, repeatedValue: 0)
+                        data.getBytes(&array, length: data.length)
+                        return HttpResponse.RAW(200, "OK", nil, { $0.write(array) })
                     } catch {
                         return HttpResponse.InternalServerError
                     }
