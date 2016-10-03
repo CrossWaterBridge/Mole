@@ -24,7 +24,6 @@ import Foundation
 import Swifter
 
 public class MoleServer {
-    
     private let server = HttpServer()
     
     public init() {
@@ -33,7 +32,7 @@ public class MoleServer {
         } catch {}
     }
     
-    public subscript(name: String) -> ((AnyObject) throws -> AnyObject?)? {
+    public subscript(name: String) -> ((Any) throws -> Any?)? {
         get {
             return nil
         }
@@ -41,29 +40,29 @@ public class MoleServer {
             if let handler = newValue {
                 server["/" + name] = { request in
                     let body = request.body
-                    let data = NSData(bytes: body, length: body.count)
+                    let data = Data(bytes: body, count: body.count)
                     
-                    let parameters: AnyObject
+                    let parameters: Any
                     do {
-                        parameters = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: nil)
+                        parameters = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
                     } catch {
-                        return HttpResponse.InternalServerError
+                        return .internalServerError
                     }
                     
-                    let response: AnyObject
+                    let response: Any
                     do {
                         response = try handler(parameters) ?? []
                     } catch {
-                        return HttpResponse.InternalServerError
+                        return .internalServerError
                     }
                     
                     do {
-                        let data = try NSPropertyListSerialization.dataWithPropertyList(response, format: .XMLFormat_v1_0, options: 0)
-                        var array = [UInt8](count: data.length, repeatedValue: 0)
-                        data.getBytes(&array, length: data.length)
-                        return HttpResponse.RAW(200, "OK", nil, { $0.write(array) })
+                        let data = try PropertyListSerialization.data(fromPropertyList: response, format: .xml, options: 0)
+                        var array = [UInt8](repeating: 0, count: data.count)
+                        data.copyBytes(to: &array, count: data.count)
+                        return .raw(200, "OK", nil, { try $0.write(array) })
                     } catch {
-                        return HttpResponse.InternalServerError
+                        return .internalServerError
                     }
                 }
             } else {
@@ -71,5 +70,4 @@ public class MoleServer {
             }
         }
     }
-    
 }

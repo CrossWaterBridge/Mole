@@ -1,12 +1,22 @@
 PODS:
-  - Swifter (1.1.4)
+  - Swifter (1.2.6)
 
 DEPENDENCIES:
-  - Swifter
+  - Swifter (from `https://github.com/httpswift/swifter.git`, branch `stable`)
+
+EXTERNAL SOURCES:
+  Swifter:
+    :branch: stable
+    :git: https://github.com/httpswift/swifter.git
+
+CHECKOUT OPTIONS:
+  Swifter:
+    :commit: d18f0187970915c753d1dfc5cd94da5f8254c189
+    :git: https://github.com/httpswift/swifter.git
 
 SPEC CHECKSUMS:
-  Swifter: a95fe83da8c1161855cb2fa86bbd730e90cabe3a
+  Swifter: c6f13d053398f1e2f209c7a394dfd5e863ae0157
 
-PODFILE CHECKSUM: b38226282d732e0f6fadfa4042203bab00152556
+PODFILE CHECKSUM: 021891ded7e2c12840f92851e322d42ad5a644da
 
-COCOAPODS: 1.0.0
+COCOAPODS: 1.1.0.rc.2

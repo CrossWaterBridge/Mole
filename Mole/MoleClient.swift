@@ -23,52 +23,51 @@
 import Foundation
 
 public class MoleClient {
-    
     public init() {}
     
-    public func invokeMethod(name: String = #function, parameters: AnyObject = []) -> AnyObject? {
-        let urlComponents = NSURLComponents()
+    @discardableResult
+    public func invokeMethod(_ name: String = #function, parameters: Any = []) -> Any? {
+        var urlComponents = URLComponents()
         urlComponents.scheme = "http"
         urlComponents.host = "localhost"
         urlComponents.port = 8080
         urlComponents.path = "/" + name
         
-        if let url = urlComponents.URL {
-            let body: NSData
+        if let url = urlComponents.url {
+            let body: Data
             do {
-                body = try NSPropertyListSerialization.dataWithPropertyList(parameters, format: .XMLFormat_v1_0, options: 0)
+                body = try PropertyListSerialization.data(fromPropertyList: parameters, format: .xml, options: 0)
             } catch let error as NSError {
                 fatalError("Failed to serialize arguments to test bridge: \(error)")
             }
             
-            let request = NSMutableURLRequest(URL: url)
-            request.HTTPMethod = "POST"
-            request.HTTPBody = body
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.httpBody = body
             
-            var result: AnyObject?
+            var result: Any?
             
-            let semaphore = dispatch_semaphore_create(0)
+            let semaphore = DispatchSemaphore(value: 0)
             
-            NSURLSession.sharedSession().dataTaskWithRequest(request) { data, _, error in
+            URLSession.shared.dataTask(with: request, completionHandler: { data, _, error in
                 if let error = error {
                     fatalError("Received error from test bridge: \(error)")
                 } else if let data = data {
                     do {
-                        result = try NSPropertyListSerialization.propertyListWithData(data, options: [], format: nil)
+                        result = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
                     } catch let error as NSError {
                         fatalError("Failed to deserialize response from test bridge: \(error)")
                     }
                 }
                 
-                dispatch_semaphore_signal(semaphore)
-            }.resume()
+                semaphore.signal()
+            }).resume()
             
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            _ = semaphore.wait(timeout: DispatchTime.distantFuture)
             
             return result
         } else {
             fatalError("Failed to construct URL to test bridge")
         }
     }
-    
 }
